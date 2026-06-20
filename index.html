@@ -781,7 +781,7 @@ function openNavScreen(idx) {
   const s = stations[idx];
   document.getElementById('navBadge').textContent = 'תחנה ' + (idx + 1) + ' מתוך ' + stations.length;
   document.getElementById('navTitle').textContent = s.emoji + ' ' + s.name;
-  document.getElementById('navInstructions').innerHTML = 'עליכם להגיע אל <strong>' + s.name + '</strong>.<br><br>השתמשו בכפתור הניווט למטה כדי למצוא את המסלול הטוב ביותר.';
+  document.getElementById('navInstructions').innerHTML = 'עליכם להגיע אל <strong>' + s.name + '</strong>.<br><br>השתמשו בכפתור הניווט למטה כדי למצוא את המסלול הטוב ביותר. לאחר שתגיע לתחנה ליחצו על הכפתור התחתית המסך לסריקת הקוד לכניסה';
   document.getElementById('navMapsBtn').href = s.mapsUrl;
   const hero = document.getElementById('navHero');
   const navImg = document.getElementById('navHeroImg');
@@ -885,7 +885,7 @@ setInterval(() => {
   localStorage.removeItem('naviguim-scannable');
   localStorage.removeItem('naviguim-done');
   location.reload();
-}, 60000);
+}, 300000);
 
 // Unregister any existing service worker to prevent caching issues
 if ('serviceWorker' in navigator) {
