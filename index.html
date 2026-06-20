@@ -329,6 +329,9 @@
 <!-- HOME -->
 <div class="screen" id="home">
   <div class="home-hero" style="position:relative;">
+    <button class="reset-btn" onclick="resetProgress()" aria-label="חזרה למצב ההתחלתי">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>
+    </button>
     <span class="emoji">🗺️</span>
     <h1>יום ניווטים בתל אביב</h1>
     <p>קבוצת פלג</p>
@@ -880,13 +883,13 @@ function stopQR() {
 }
 
 // Service worker
-// DEV: Reset station progress every minute (remove before launch!)
-setInterval(() => {
+function resetProgress() {
+  if (!confirm('לאפס את ההתקדמות ולחזור למצב ההתחלתי?')) return;
   localStorage.removeItem('naviguim-entered');
   localStorage.removeItem('naviguim-scannable');
   localStorage.removeItem('naviguim-done');
   location.reload();
-}, 300000);
+}
 
 // Unregister any existing service worker to prevent caching issues
 if ('serviceWorker' in navigator) {
