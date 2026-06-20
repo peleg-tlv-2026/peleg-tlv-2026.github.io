@@ -556,23 +556,20 @@ const stations = [
 const STATION_CODES_2 = ['BIMA25GO', 'RABIN25GO', 'GORDON25GO', 'SARONA25GO', 'GIRAFFE25GO'];
 
 let doneStations = JSON.parse(localStorage.getItem('naviguim-done') || '[]');
-let visitedStations = JSON.parse(localStorage.getItem('naviguim-visited') || '[]');
+let enteredStations = JSON.parse(localStorage.getItem('naviguim-entered') || '[]');
+let scannableStations = JSON.parse(localStorage.getItem('naviguim-scannable') || '[0]');
 
-function getUnlocked() {
-  return visitedStations;
-}
-
-function markVisited(idx) {
-  if (!visitedStations.includes(idx)) {
-    visitedStations.push(idx);
-    localStorage.setItem('naviguim-visited', JSON.stringify(visitedStations));
+function markEntered(idx) {
+  if (!enteredStations.includes(idx)) {
+    enteredStations.push(idx);
+    localStorage.setItem('naviguim-entered', JSON.stringify(enteredStations));
   }
 }
 
 function unlockNext(idx) {
-  if (idx + 1 < stations.length && !visitedStations.includes(idx + 1)) {
-    visitedStations.push(idx + 1);
-    localStorage.setItem('naviguim-visited', JSON.stringify(visitedStations));
+  if (idx + 1 < stations.length && !scannableStations.includes(idx + 1)) {
+    scannableStations.push(idx + 1);
+    localStorage.setItem('naviguim-scannable', JSON.stringify(scannableStations));
   }
 }
 let currentIdx = -1;
@@ -787,6 +784,7 @@ function openNavScreen(idx) {
 }
 
 function proceedToStation() {
+  markEntered(pendingStationIdx);
   openDetail(pendingStationIdx);
 }
 
@@ -865,7 +863,8 @@ function stopQR() {
 // Service worker
 // DEV: Reset station progress every minute (remove before launch!)
 setInterval(() => {
-  localStorage.removeItem('naviguim-visited');
+  localStorage.removeItem('naviguim-entered');
+  localStorage.removeItem('naviguim-scannable');
   localStorage.removeItem('naviguim-done');
   location.reload();
 }, 60000);
