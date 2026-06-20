@@ -317,9 +317,13 @@
       pointer-events: none;
       user-select: none;
     }
-    .station-item.next-up > * {
-      filter: blur(4px);
-      opacity: 0.4;
+    .station-item.next-up {
+      border-color: var(--green-light);
+      background: var(--green-pale);
+    }
+    .station-item.next-up .station-info h3 {
+      color: var(--green-dark);
+      font-weight: 700;
     }
     .station-item.locked > * {
       filter: blur(4px);
@@ -627,17 +631,28 @@ function renderList() {
     const canScan = scannableStations.includes(i);
     const entered = enteredStations.includes(i);
     const locked = !canScan;
+    const nextUp = !entered && canScan;
     const div = document.createElement('div');
-    div.className = 'station-item' + (done ? ' done' : '') + (locked ? ' locked' : '') + (!entered && canScan ? ' next-up' : '');
+    div.className = 'station-item' + (done ? ' done' : '') + (locked ? ' locked' : '') + (nextUp ? ' next-up' : '');
     div.onclick = locked ? null : () => openQRScreen(i);
-    div.innerHTML = `
-      <div class="station-num ${s.final ? 'final-num' : ''} ${done ? 'done-num' : ''}">${done ? '✓' : (i+1)}</div>
-      <div class="station-info">
-        <h3>${s.emoji} ${s.name}</h3>
-        <p>${s.address}</p>
-      </div>
-      ${done ? '<span class="done-badge">בוצע</span>' : '<span class="station-arrow">›</span>'}
-    `;
+    if (nextUp) {
+      div.innerHTML = `
+        <div class="station-num ${s.final ? 'final-num' : ''}">${i+1}</div>
+        <div class="station-info">
+          <h3>נא ללחוץ כדי לעבור לתחנה הבאה</h3>
+        </div>
+        <span class="station-arrow">›</span>
+      `;
+    } else {
+      div.innerHTML = `
+        <div class="station-num ${s.final ? 'final-num' : ''} ${done ? 'done-num' : ''}">${done ? '✓' : (i+1)}</div>
+        <div class="station-info">
+          <h3>${s.emoji} ${s.name}</h3>
+          <p>${s.address}</p>
+        </div>
+        ${done ? '<span class="done-badge">בוצע</span>' : '<span class="station-arrow">›</span>'}
+      `;
+    }
     list.appendChild(div);
   });
   updateProgress();
