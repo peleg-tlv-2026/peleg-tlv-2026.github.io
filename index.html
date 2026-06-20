@@ -708,7 +708,24 @@ function toggleDone() {
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
+  if (id !== 'splash') {
+    history.pushState({ screen: id }, '', '');
+  }
 }
+
+window.addEventListener('popstate', (e) => {
+  const screen = e.state?.screen;
+  if (!screen || screen === 'home') {
+    stopQR();
+    stopNavQR();
+    renderList();
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById('home').classList.add('active');
+  } else {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(screen).classList.add('active');
+  }
+});
 
 function launchConfetti() {
   const overlay = document.getElementById('confetti-overlay');
