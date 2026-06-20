@@ -605,13 +605,12 @@ function renderList() {
 
   stations.forEach((s, i) => {
     const done = doneStations.includes(i);
-    const unlocked = getUnlocked();
-    const locked = !unlocked.includes(i);
+    const canScan = scannableStations.includes(i);
+    const entered = enteredStations.includes(i);
+    const locked = !canScan;
     const div = document.createElement('div');
-    const isVisited = unlocked.includes(i);
-    const nextUp = !isVisited && (i === 0 || unlocked.includes(i - 1));
-    div.className = 'station-item' + (done ? ' done' : '') + (locked && !nextUp ? ' locked' : '') + (nextUp ? ' next-up' : '');
-    div.onclick = (locked && !nextUp) ? null : () => openQRScreen(i);
+    div.className = 'station-item' + (done ? ' done' : '') + (locked ? ' locked' : '') + (!entered && canScan ? ' next-up' : '');
+    div.onclick = locked ? null : () => openQRScreen(i);
     div.innerHTML = `
       <div class="station-num ${s.final ? 'final-num' : ''} ${done ? 'done-num' : ''}">${done ? '✓' : (i+1)}</div>
       <div class="station-info">
@@ -627,7 +626,6 @@ function renderList() {
 
 function openDetail(idx) {
   currentIdx = idx;
-  markVisited(idx);
   const s = stations[idx];
   const done = doneStations.includes(idx);
 
