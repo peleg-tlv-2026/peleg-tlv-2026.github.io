@@ -1004,33 +1004,155 @@ let leafletMap = null;
 let userMarker = null;
 let accuracyCircle = null;
 
+// SVG for Azrieli towers (round + square + triangle)
+const azrieliSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="54" height="60" viewBox="0 0 54 60">
+  <filter id="s"><feDropShadow dx="0" dy="1" stdDeviation="1.5" flood-color="#0005"/></filter>
+  <g filter="url(#s)">
+    <!-- Round tower -->
+    <ellipse cx="10" cy="42" rx="9" ry="2" fill="#7F77DD" opacity="0.4"/>
+    <rect x="4" y="14" width="12" height="28" fill="#534AB7" rx="6"/>
+    <ellipse cx="10" cy="14" rx="6" ry="3" fill="#7F77DD"/>
+    <rect x="6" y="18" width="2" height="3" fill="#EEEDFE" rx="0.5"/>
+    <rect x="10" y="18" width="2" height="3" fill="#EEEDFE" rx="0.5"/>
+    <rect x="6" y="24" width="2" height="3" fill="#EEEDFE" rx="0.5"/>
+    <rect x="10" y="24" width="2" height="3" fill="#EEEDFE" rx="0.5"/>
+    <rect x="6" y="30" width="2" height="3" fill="#EEEDFE" rx="0.5"/>
+    <rect x="10" y="30" width="2" height="3" fill="#EEEDFE" rx="0.5"/>
+    <!-- Square tower -->
+    <rect x="20" y="10" width="14" height="32" fill="#3C3489" rx="2"/>
+    <rect x="22" y="13" width="3" height="4" fill="#8F9FE8" rx="0.5"/>
+    <rect x="28" y="13" width="3" height="4" fill="#8F9FE8" rx="0.5"/>
+    <rect x="22" y="21" width="3" height="4" fill="#8F9FE8" rx="0.5"/>
+    <rect x="28" y="21" width="3" height="4" fill="#8F9FE8" rx="0.5"/>
+    <rect x="22" y="29" width="3" height="4" fill="#8F9FE8" rx="0.5"/>
+    <rect x="28" y="29" width="3" height="4" fill="#8F9FE8" rx="0.5"/>
+    <!-- Triangle tower -->
+    <polygon points="39,42 53,42 46,4" fill="#26215C"/>
+    <rect x="43" y="20" width="2" height="3" fill="#8F9FE8" rx="0.5"/>
+    <rect x="43" y="28" width="2" height="3" fill="#8F9FE8" rx="0.5"/>
+    <rect x="43" y="36" width="2" height="3" fill="#8F9FE8" rx="0.5"/>
+    <!-- Ground base -->
+    <rect x="2" y="42" width="52" height="4" fill="#B4B2C8" rx="2"/>
+  </g>
+</svg>`;
+
+// SVG for Shalom Tower (tall single tower with antenna)
+const shalomSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="64" viewBox="0 0 32 64">
+  <filter id="s2"><feDropShadow dx="0" dy="1" stdDeviation="1" flood-color="#0005"/></filter>
+  <g filter="url(#s2)">
+    <rect x="10" y="10" width="12" height="46" fill="#888065" rx="2"/>
+    <rect x="12" y="13" width="3" height="4" fill="#D4C9A0" rx="0.5"/>
+    <rect x="17" y="13" width="3" height="4" fill="#D4C9A0" rx="0.5"/>
+    <rect x="12" y="21" width="3" height="4" fill="#D4C9A0" rx="0.5"/>
+    <rect x="17" y="21" width="3" height="4" fill="#D4C9A0" rx="0.5"/>
+    <rect x="12" y="29" width="3" height="4" fill="#D4C9A0" rx="0.5"/>
+    <rect x="17" y="29" width="3" height="4" fill="#D4C9A0" rx="0.5"/>
+    <rect x="12" y="37" width="3" height="4" fill="#D4C9A0" rx="0.5"/>
+    <rect x="17" y="37" width="3" height="4" fill="#D4C9A0" rx="0.5"/>
+    <!-- Antenna -->
+    <rect x="15" y="2" width="2" height="10" fill="#555" rx="1"/>
+    <circle cx="16" cy="2" r="2" fill="#D85A30"/>
+    <!-- Base -->
+    <rect x="6" y="56" width="20" height="4" fill="#B4B2A9" rx="2"/>
+  </g>
+</svg>`;
+
+// SVG for train
+const trainSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="44" height="36" viewBox="0 0 44 36">
+  <filter id="s3"><feDropShadow dx="0" dy="1" stdDeviation="1" flood-color="#0004"/></filter>
+  <g filter="url(#s3)">
+    <!-- Body -->
+    <rect x="2" y="6" width="40" height="20" fill="#1D6FA4" rx="5"/>
+    <!-- Stripe -->
+    <rect x="2" y="18" width="40" height="4" fill="#FAC775"/>
+    <!-- Windows -->
+    <rect x="6" y="9" width="7" height="6" fill="#B5D4F4" rx="2"/>
+    <rect x="17" y="9" width="7" height="6" fill="#B5D4F4" rx="2"/>
+    <rect x="28" y="9" width="7" height="6" fill="#B5D4F4" rx="2"/>
+    <!-- Door -->
+    <rect x="19" y="15" width="6" height="11" fill="#0E4A72" rx="1"/>
+    <!-- Wheels -->
+    <circle cx="10" cy="28" r="4" fill="#333"/>
+    <circle cx="10" cy="28" r="2" fill="#888"/>
+    <circle cx="34" cy="28" r="4" fill="#333"/>
+    <circle cx="34" cy="28" r="2" fill="#888"/>
+    <!-- Rail -->
+    <rect x="0" y="32" width="44" height="2" fill="#999" rx="1"/>
+  </g>
+</svg>`;
+
 const mapLandmarks = [
-  { name: "כיכר הבימה", lat: 32.0703, lng: 34.7812, emoji: "🎭" },
-  { name: "כיכר רבין", lat: 32.0813, lng: 34.7814, emoji: "🕊️" },
-  { name: "חוף גורדון", lat: 32.0869, lng: 34.7671, emoji: "🏖️" },
-  { name: "שרונה מרקט", lat: 32.0650, lng: 34.7900, emoji: "🏘️" },
-  { name: "מסעדת הג'ירף", lat: 32.0647, lng: 34.7898, emoji: "🦒" },
+  { name: "כיכר הבימה", lat: 32.0703, lng: 34.7812, emoji: "🎭", desc: "כיכר ותיאטרון לאומי" },
+  { name: "כיכר רבין", lat: 32.0813, lng: 34.7814, emoji: "🕊️", desc: "כיכר העיר הגדולה" },
+  { name: "חוף גורדון", lat: 32.0869, lng: 34.7671, emoji: "🏖️", desc: "חוף ים יפהפה" },
+  { name: "שוק הכרמל", lat: 32.0636, lng: 34.7742, emoji: "🍊", desc: "שוק צבעוני עם פירות וירקות" },
+  { name: "יפו העתיקה", lat: 32.0528, lng: 34.7519, emoji: "⚓", desc: "עיר עתיקה וציורית" },
+  { name: "נמל תל אביב", lat: 32.0968, lng: 34.7700, emoji: "🚢", desc: "הנמל הישן שהפך לאטרקציה" },
 ];
+
+function makeSvgIcon(svgString, w, h) {
+  return L.divIcon({
+    html: svgString,
+    className: '',
+    iconSize: [w, h],
+    iconAnchor: [w / 2, h],
+    popupAnchor: [0, -h + 4]
+  });
+}
+
+function makeEmojiIcon(emoji) {
+  return L.divIcon({
+    html: `<div style="font-size:26px;line-height:1;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.25))">${emoji}</div>`,
+    className: '', iconSize: [32, 32], iconAnchor: [16, 16], popupAnchor: [0, -18]
+  });
+}
 
 function openMapModal() {
   const modal = document.getElementById('map-modal');
   modal.classList.add('open');
   if (!leafletMap) {
     setTimeout(() => {
-      leafletMap = L.map('leaflet-map', { zoomControl: true }).setView([32.075, 34.785], 13);
+      // Bounds: Yarkon (north) ~ 32.101 to Tikva Quarter (south) ~ 32.047
+      // West: sea ~ 34.760, East: ~ 34.820
+      const bounds = [[32.047, 34.760], [32.101, 34.825]];
+      leafletMap = L.map('leaflet-map', {
+        zoomControl: true,
+        maxBounds: bounds,
+        maxBoundsViscosity: 0.85
+      }).fitBounds(bounds);
+
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© OpenStreetMap',
         maxZoom: 19
       }).addTo(leafletMap);
+
+      // Emoji landmarks
       mapLandmarks.forEach(lm => {
-        const icon = L.divIcon({
-          html: `<div style="font-size:26px;line-height:1;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.25))">${lm.emoji}</div>`,
-          className: '', iconSize: [32, 32], iconAnchor: [16, 16], popupAnchor: [0, -18]
-        });
-        L.marker([lm.lat, lm.lng], { icon })
+        L.marker([lm.lat, lm.lng], { icon: makeEmojiIcon(lm.emoji) })
           .addTo(leafletMap)
-          .bindPopup(`<b>${lm.emoji} ${lm.name}</b>`, { maxWidth: 180 });
+          .bindPopup(`<b>${lm.emoji} ${lm.name}</b><br><span style="font-size:12px;color:#555">${lm.desc}</span>`, { maxWidth: 180 });
       });
+
+      // Azrieli towers
+      L.marker([32.0743, 34.7923], { icon: makeSvgIcon(azrieliSVG, 54, 60) })
+        .addTo(leafletMap)
+        .bindPopup('<b>🏙️ מגדלי עזריאלי</b><br><span style="font-size:12px;color:#555">שלושה מגדלים מפורסמים!</span>', { maxWidth: 180 });
+
+      // Shalom Tower
+      L.marker([32.0625, 34.7741], { icon: makeSvgIcon(shalomSVG, 32, 64) })
+        .addTo(leafletMap)
+        .bindPopup('<b>🏛️ מגדל שלום</b><br><span style="font-size:12px;color:#555">המגדל הגבוה הראשון בישראל</span>', { maxWidth: 180 });
+
+      // Train - Savidor Center station
+      L.marker([32.0942, 34.7890], { icon: makeSvgIcon(trainSVG, 44, 36) })
+        .addTo(leafletMap)
+        .bindPopup('<b>🚂 תחנת סבידור מרכז</b><br><span style="font-size:12px;color:#555">תחנת רכבת מרכזית</span>', { maxWidth: 180 });
+
+      // Train - HaHagana station
+      L.marker([32.0490, 34.7660], { icon: makeSvgIcon(trainSVG, 44, 36) })
+        .addTo(leafletMap)
+        .bindPopup('<b>🚂 תחנת ההגנה</b><br><span style="font-size:12px;color:#555">תחנת רכבת דרומית</span>', { maxWidth: 180 });
+
     }, 80);
   } else {
     setTimeout(() => leafletMap.invalidateSize(), 80);
