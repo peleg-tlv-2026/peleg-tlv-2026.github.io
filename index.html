@@ -1114,16 +1114,21 @@ function openMapModal() {
     setTimeout(() => {
       // Bounds: Yarkon (north) ~ 32.101 to Tikva Quarter (south) ~ 32.047
       // West: sea ~ 34.760, East: ~ 34.820
-      const bounds = [[32.047, 34.760], [32.101, 34.825]];
+      // sea (west) to Ayalon (east), Yarkon (north) to Tikva (south)
+      const bounds = [[32.047, 34.752], [32.101, 34.798]];
       leafletMap = L.map('leaflet-map', {
         zoomControl: true,
         maxBounds: bounds,
-        maxBoundsViscosity: 0.85
-      }).fitBounds(bounds);
+        maxBoundsViscosity: 1.0,
+        minZoom: 13,
+        maxZoom: 17
+      }).fitBounds(bounds, { padding: [0, 0] });
 
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap',
-        maxZoom: 19
+      // Carto Voyager no-labels — clean minimal tiles
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png', {
+        attribution: '© OpenStreetMap © CARTO',
+        maxZoom: 17,
+        subdomains: 'abcd'
       }).addTo(leafletMap);
 
       // Emoji landmarks
@@ -1143,8 +1148,8 @@ function openMapModal() {
         .addTo(leafletMap)
         .bindPopup('<b>🏛️ מגדל שלום</b><br><span style="font-size:12px;color:#555">המגדל הגבוה הראשון בישראל</span>', { maxWidth: 180 });
 
-      // Train - Savidor Center station
-      L.marker([32.0942, 34.7890], { icon: makeSvgIcon(trainSVG, 44, 36) })
+      // Train - Savidor Center station (real coords)
+      L.marker([32.0942, 34.7804], { icon: makeSvgIcon(trainSVG, 44, 36) })
         .addTo(leafletMap)
         .bindPopup('<b>🚂 תחנת סבידור מרכז</b><br><span style="font-size:12px;color:#555">תחנת רכבת מרכזית</span>', { maxWidth: 180 });
 
