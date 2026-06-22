@@ -621,7 +621,8 @@ const stations = [
     emoji: "🎭",
     reading: `<div class="reading-script"><div class="reading-title">כיכר הבימה – "למה צריך תרבות?"</div><div class="reading-part"><span class="reader">אהוד</span><p>אנחנו עומדים ליד התיאטרון הלאומי של ישראל.<br>עכשיו תדמיינו שמחר בבוקר אתם מקימים מדינה חדשה לגמרי.<br>יש לכם תקציב מוגבל, ואתם צריכים להחליט במה להשקיע קודם.</p></div><div class="reading-part"><span class="reader">ניר</span><p>יש דברים שברור שצריך:<br>צבא. בתי חולים. בתי ספר. כבישים.<br>אבל מה לגבי מוזיקה, ספרים, סרטים, הצגות, אמנות וספורט?</p></div><div class="reading-part"><span class="reader">איימי</span><p>יש אנשים שיגידו:<br>"קודם נטפל בדברים החשובים. תרבות היא מותרות."<br>ויש אנשים שיגידו:<br>"בלי תרבות יש מדינה, אבל אין באמת חברה."<br>אז מי צודק?</p></div><div class="reading-part"><span class="reader">גילי ש.</span><p>עכשיו תחשבו רגע:<br>אם מישהו מחו"ל היה שואל אתכם מה מיוחד בישראל, מה הייתם מראים לו?<br>טנק? דגל? קבוצת כדורגל? שיר? סדרת טלוויזיה? אוכל?<br>מה הדבר שהכי מספר מי אנחנו?</p></div></div>`,
     activity: "🎯 גם אצלנו בלהב יש תרבות, שירים, מסורות ודברים שמחברים בין אנשים. אז כדי להוכיח שתרבות לא קיימת רק בתל אביב — המשימה שלכם היא לצלם את עצמכם שרים יחד את המנון להב, 'אני בונה ביתי'.",
-    final: false
+    final: false,
+    disabled: true
   },
   {
     name: "כיכר רבין",
@@ -719,10 +720,11 @@ function renderList() {
     const canScan = scannableStations.includes(i);
     const entered = enteredStations.includes(i);
     const locked = !canScan;
+    const disabled = !!s.disabled;
     const nextUp = !entered && canScan;
     const div = document.createElement('div');
     div.className = 'station-item' + (done ? ' done' : '') + (locked ? ' locked' : '') + (nextUp ? ' next-up' : '');
-    div.onclick = locked ? null : () => openQRScreen(i);
+    div.onclick = (locked || disabled) ? null : () => openQRScreen(i);
     if (nextUp) {
       div.innerHTML = `
         <div class="station-num ${s.final ? 'final-num' : ''}">${i+1}</div>
@@ -1082,7 +1084,7 @@ const trainSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="44" height="36"
 </svg>`;
 
 const mapLandmarks = [
-  { name: "כיכר הבימה", lat: 32.0703, lng: 34.7812, emoji: "🎭", desc: "כיכר ותיאטרון לאומי" },
+  // { name: "כיכר הבימה", lat: 32.0703, lng: 34.7812, emoji: "🎭", desc: "כיכר ותיאטרון לאומי" },
   { name: "כיכר רבין", lat: 32.0813, lng: 34.7814, emoji: "🕊️", desc: "כיכר העיר הגדולה" },
   { name: "חוף גורדון", lat: 32.0869, lng: 34.7671, emoji: "🏖️", desc: "חוף ים יפהפה" },
   { name: "שוק הכרמל", lat: 32.0636, lng: 34.7742, emoji: "🍊", desc: "שוק צבעוני עם פירות וירקות" },
