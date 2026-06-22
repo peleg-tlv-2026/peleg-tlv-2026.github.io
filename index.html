@@ -621,8 +621,7 @@ const stations = [
     emoji: "🎭",
     reading: `<div class="reading-script"><div class="reading-title">כיכר הבימה – "למה צריך תרבות?"</div><div class="reading-part"><span class="reader">אהוד</span><p>אנחנו עומדים ליד התיאטרון הלאומי של ישראל.<br>עכשיו תדמיינו שמחר בבוקר אתם מקימים מדינה חדשה לגמרי.<br>יש לכם תקציב מוגבל, ואתם צריכים להחליט במה להשקיע קודם.</p></div><div class="reading-part"><span class="reader">ניר</span><p>יש דברים שברור שצריך:<br>צבא. בתי חולים. בתי ספר. כבישים.<br>אבל מה לגבי מוזיקה, ספרים, סרטים, הצגות, אמנות וספורט?</p></div><div class="reading-part"><span class="reader">איימי</span><p>יש אנשים שיגידו:<br>"קודם נטפל בדברים החשובים. תרבות היא מותרות."<br>ויש אנשים שיגידו:<br>"בלי תרבות יש מדינה, אבל אין באמת חברה."<br>אז מי צודק?</p></div><div class="reading-part"><span class="reader">גילי ש.</span><p>עכשיו תחשבו רגע:<br>אם מישהו מחו"ל היה שואל אתכם מה מיוחד בישראל, מה הייתם מראים לו?<br>טנק? דגל? קבוצת כדורגל? שיר? סדרת טלוויזיה? אוכל?<br>מה הדבר שהכי מספר מי אנחנו?</p></div></div>`,
     activity: "🎯 גם אצלנו בלהב יש תרבות, שירים, מסורות ודברים שמחברים בין אנשים. אז כדי להוכיח שתרבות לא קיימת רק בתל אביב — המשימה שלכם היא לצלם את עצמכם שרים יחד את המנון להב, 'אני בונה ביתי'.",
-    final: false,
-    disabled: true
+    final: false
   },
   {
     name: "כיכר רבין",
@@ -871,7 +870,7 @@ let html5QrCode = null;
 function openQRScreen(idx) {
   pendingStationIdx = idx;
   const s = stations[idx];
-  document.getElementById('qrStationTitle').textContent = s.emoji + ' ' + s.name;
+  document.getElementById('qrStationTitle').textContent = 'תחנה ' + (idx + 1) + ' מתוך ' + stations.length;
   document.getElementById('qr-error').style.display = 'none';
   document.getElementById('manual-code').value = '';
   showScreen('qr-screen');
@@ -933,7 +932,7 @@ let html5QrCode2 = null;
 
 function openNavQRScreen() {
   const s = stations[pendingStationIdx];
-  document.getElementById('navQrTitle').textContent = s.emoji + ' ' + s.name;
+  document.getElementById('navQrTitle').textContent = 'סריקת כניסה לתחנה ' + (pendingStationIdx + 1);
   document.getElementById('nav-qr-error').style.display = 'none';
   document.getElementById('nav-manual-code').value = '';
   showScreen('nav-qr-screen');
